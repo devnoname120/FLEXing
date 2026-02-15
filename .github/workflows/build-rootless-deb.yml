@@ -15,6 +15,27 @@ jobs:
         with:
           submodules: recursive
 
+      - name: Install build dependencies
+        run: |
+          sudo apt-get update
+          if apt-cache show libtinfo5 >/dev/null 2>&1; then
+            TINFO_PACKAGE=libtinfo5
+          else
+            TINFO_PACKAGE=libtinfo6
+          fi
+
+          sudo apt-get install -y \
+            build-essential \
+            fakeroot \
+            "$TINFO_PACKAGE" \
+            libz3-dev \
+            rsync \
+            curl \
+            perl \
+            unzip \
+            git \
+            libplist-utils
+
       - name: Setup Theos
         uses: Randomblock1/theos-action@v1
 
