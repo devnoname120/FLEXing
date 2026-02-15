@@ -1,0 +1,33 @@
+name: Build rootless DEB
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Setup Theos
+        uses: Randomblock1/theos-action@v1
+
+      - name: Build rootless package
+        env:
+          THEOS_PACKAGE_SCHEME: rootless
+        run: |
+          make clean package FINALPACKAGE=1
+
+      - name: Upload DEB artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: flexing-rootless-debs
+          path: |
+            packages/*.deb
+          if-no-files-found: error
